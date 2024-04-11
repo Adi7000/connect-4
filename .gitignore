@@ -1,3 +1,6 @@
-/target
-Cargo.lock
-dist
+api_usage_example/target
+connect_api/target
+
+frontend/target
+frontend/Cargo.lock
+frontend/dist
