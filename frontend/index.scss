@@ -1,0 +1,72 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  align-items: start;
+  display: flex;
+  justify-content: center;
+  // background: linear-gradient(to bottom, #444444, #009a5b);
+  background: white;
+  font-size: 1.5rem;
+}
+
+main {
+  color: #000000;
+  font-family: sans-serif;
+  text-align: center;
+}
+
+board {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 0.3em;
+  margin: 0 auto;
+  max-width: 40em;
+  height: 50vw;
+  width: 70vw;
+  align-items: center;
+  background-color: #008cff;
+  padding: 1em;
+}
+
+column {
+  display: grid;
+  grid-template-rows: repeat(6, 1fr);
+  grid-gap: 0.3em;
+  height: 100%;
+  width: auto;
+  cursor: pointer;
+  align-items: center;
+
+  &:hover {
+    background-color: #ff0000; // Change to the desired background color on hover
+  }
+}
+
+cell {
+  justify-self: center;
+  border: 1px solid #000000;
+  border-radius: 100%;
+  flex: 1;
+  display: flex;
+  height: 80%;
+  width: 80%;
+}
+
+// .logo {
+//   height: 20em;
+// }
+
+// .heart:after {
+//   content: "❤️";
+
+//   font-size: 1.75em;
+// }
+
+// h1 + .subtitle {
+//   display: block;
+//   margin-top: -1em;
+// }
