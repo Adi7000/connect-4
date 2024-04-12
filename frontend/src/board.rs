@@ -34,7 +34,7 @@ pub fn board(_props: &BoardProps) -> Html {
         let set_cell_colors = cell_colors.clone();
         Callback::from(move |col_index: usize| {
             let mut new_cell_colors = cell_colors_clone.clone().to_vec();
-            for cell_color in new_cell_colors[col_index].iter_mut() {
+            for cell_color in new_cell_colors[col_index].iter_mut().rev() {
                 if *cell_color == Color::Empty {
                     *cell_color = Color::Red;
                     break;
