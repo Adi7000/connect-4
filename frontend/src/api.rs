@@ -1,7 +1,5 @@
-use reqwest;
-use rocket::serde::json::Value;
-use rocket::serde::Deserialize;
-use rocket::serde::Serialize;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 const PORT_NUMBER: u16 = 5000;
 const EMPTY: i32 = 0;

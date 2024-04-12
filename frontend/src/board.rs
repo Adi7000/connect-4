@@ -26,12 +26,17 @@ pub enum Color {
 
 #[function_component(Board)]
 pub fn board(_props: &BoardProps) -> Html {
-    let game_state = GameState {
+    let mut game_state = GameState {
         connect_4: true,
         board_state: vec![vec![0; 6]; 7],
         difficulty: 1,
         error: 0,
     };
+
+    // wasm_bindgen_futures::spawn_local(async move {
+    //     game_state = computer_move(game_state).await;
+    // });
+
     let cell_colors = use_state(|| vec![vec![Color::Empty; 6]; 7]);
     let cell_colors_clone = cell_colors.clone();
     let current_player = use_state(|| Color::Red);
@@ -98,3 +103,21 @@ pub fn cell(props: &CellProps) -> Html {
         <cell id={cell_id} style={format!("background-color:{}", cell_color)}></cell>
     }
 }
+
+// async fn computer_move(game_state: GameState) -> GameState {
+//     let next_game_state = match get_connect4_computer_move(game_state.clone()).await {
+//         Ok(value) => match serde_json::from_value::<GameState>(value) {
+//             Ok(parsed) => parsed,
+//             Err(err) => {
+//                 println!("Error parsing JSON: {:?}", err);
+//                 return game_state;
+//             }
+//         },
+//         Err(err) => {
+//             // Handle the error if needed
+//             println!("Error: {:?}", err);
+//             return game_state;
+//         }
+//     };
+//     next_game_state
+// }
