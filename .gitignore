@@ -4,5 +4,6 @@ connect_api/target
 frontend/target
 frontend/Cargo.lock
 frontend/dist
-
+Cargo.lock
 /target
+dist
