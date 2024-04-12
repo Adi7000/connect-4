@@ -29,7 +29,7 @@ board {
   width: 70vw;
   align-items: center;
   background-color: #008cff;
-  padding: 1em;
+  // padding: 0 0.5em;
 }
 
 column {
@@ -42,7 +42,10 @@ column {
   align-items: center;
 
   &:hover {
-    background-color: #ff0000; // Change to the desired background color on hover
+    background-color: darken(
+      #008cff,
+      10%
+    ); // Change to the desired background color on hover
   }
 }
 
