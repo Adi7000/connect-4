@@ -5,9 +5,8 @@ pub struct BoardProps {}
 #[derive(Properties, Clone, PartialEq)]
 pub struct ColProps {
     col_index: usize,
-    #[prop_or(Color::Empty)]
-    color: Color,
-    pub on_click: Callback<Cell>,
+    cell_colors: Vec<Color>,
+    pub on_click: Callback<usize>,
 }
 #[derive(Properties, Clone, PartialEq)]
 pub struct CellProps {
@@ -28,12 +27,20 @@ pub enum Msg {
 }
 
 #[function_component(Board)]
-pub fn board(props: &BoardProps) -> Html {
-    let on_click = {
-        let on_click = use_state(|| Callback::noop());
-        let on_click = on_click.clone();
-        Callback::from(move |cell: Cell| {
-            on_click.emit(cell);
+pub fn board(_props: &BoardProps) -> Html {
+    let cell_colors = use_state(|| vec![vec![Color::Empty; 6]; 7]);
+    let cell_colors_clone = cell_colors.clone();
+    let on_column_click = {
+        let set_cell_colors = cell_colors.clone();
+        Callback::from(move |col_index: usize| {
+            let mut new_cell_colors = cell_colors_clone.clone().to_vec();
+            for cell_color in new_cell_colors[col_index].iter_mut() {
+                if *cell_color == Color::Empty {
+                    *cell_color = Color::Red;
+                    break;
+                }
+            }
+            set_cell_colors.set(new_cell_colors);
         })
     };
 
@@ -41,7 +48,7 @@ pub fn board(props: &BoardProps) -> Html {
         <board>
             {for (0..7).map(|col_index| {
                 html! {
-                    <Column col_index={col_index} on_click={on_click.clone()} />
+                    <Column cell_colors={cell_colors[col_index].clone()} col_index={col_index} on_click={on_column_click.clone()} />
                 }
             })}
         </board>
@@ -50,11 +57,17 @@ pub fn board(props: &BoardProps) -> Html {
 
 #[function_component(Column)]
 pub fn column(props: &ColProps) -> Html {
+    let on_click = props.on_click.clone();
+    let col_index = props.col_index.clone();
+    let on_column_click = {
+        let on_click = on_click.clone();
+        Callback::from(move |_| on_click.emit(col_index))
+    };
     html! {
-        <column>
+        <column onclick={on_column_click}>
             {for (0..6).map(|row_index| {
                 html! {
-                    <Cell color={props.color.clone()} x={row_index} y={props.col_index} />
+                    <Cell color={props.cell_colors[row_index].clone()} x={row_index} y={props.col_index} />
                 }
             })}
         </column>
