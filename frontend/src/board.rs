@@ -1,5 +1,7 @@
+use crate::api::{get_connect4_computer_move, GameState};
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
+// use this to decide between connect4 and toot board
 pub struct BoardProps {}
 
 #[derive(Properties, Clone, PartialEq)]
@@ -22,15 +24,18 @@ pub enum Color {
     Yellow,
 }
 
-pub enum Msg {
-    ColumnClicked(usize),
-}
-
 #[function_component(Board)]
 pub fn board(_props: &BoardProps) -> Html {
+    let game_state = GameState {
+        connect_4: true,
+        board_state: vec![vec![0; 6]; 7],
+        difficulty: 1,
+        error: 0,
+    };
     let cell_colors = use_state(|| vec![vec![Color::Empty; 6]; 7]);
     let cell_colors_clone = cell_colors.clone();
     let current_player = use_state(|| Color::Red);
+
     let on_column_click = {
         let set_cell_colors = cell_colors.clone();
         let current_player = current_player.clone();
@@ -44,7 +49,6 @@ pub fn board(_props: &BoardProps) -> Html {
             }
             set_cell_colors.set(new_cell_colors);
             current_player.set(match *current_player {
-                // Add these lines
                 Color::Red => Color::Yellow,
                 Color::Yellow => Color::Red,
                 _ => unreachable!(),
