@@ -1,6 +1,6 @@
 ### **MAJOR INNOVATIONS**
-    - Our Toot Otto game variant's hard mode computer moves are GPT assisted
-    - We utilized ChatGPT to get the code for how to communicate with GPT-4-Turbo API
+- Our Toot Otto game variant's hard mode computer moves are GPT assisted
+- We utilized ChatGPT to get the code for how to communicate with GPT-4-Turbo API
 
 ### **RATIONALE FOR DESIGN DECISIONS**
 - Our system is divided into a frontend and a backend
