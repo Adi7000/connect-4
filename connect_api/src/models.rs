@@ -1,3 +1,10 @@
+/*
+ * File: models.rs
+ * Author: Fahrin Bushra
+ * Date: April 11, 2024
+ * Adapted From: https://www.youtube.com/watch?v=2vxvSMkm5Lg
+ * Description: GAME STATE MODEL
+*/
 use rocket::serde::Deserialize;
 use rocket::serde::Serialize;
 
