@@ -1,3 +1,11 @@
+/*
+ * File: models.rs
+ * Author: Fahrin Bushra
+ * Date: April 11, 2024
+ * Adapted From: https://github.com/thinking-fun/Connect4-with-TootandOtto.git
+ * Description: GAME STATE MODEL
+*/
+
 use rand::Rng;
 use rand::seq::SliceRandom;
 
