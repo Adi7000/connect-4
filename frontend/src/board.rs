@@ -1,4 +1,5 @@
 use crate::api::{get_connect4_computer_move, GameState};
+use wasm_bindgen_futures::spawn_local;
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
 // use this to decide between connect4 and toot board
@@ -33,10 +34,6 @@ pub fn board(_props: &BoardProps) -> Html {
         error: 0,
     };
 
-    // wasm_bindgen_futures::spawn_local(async move {
-    //     game_state = computer_move(game_state).await;
-    // });
-
     let cell_colors = use_state(|| vec![vec![Color::Empty; 6]; 7]);
     let cell_colors_clone = cell_colors.clone();
     let current_player = use_state(|| Color::Red);
@@ -58,17 +55,41 @@ pub fn board(_props: &BoardProps) -> Html {
                 Color::Yellow => Color::Red,
                 _ => unreachable!(),
             });
+
+            // Simulate computer move
+            let game_state_clone = game_state.clone();
+            let set_cell_colors = set_cell_colors.clone();
+            wasm_bindgen_futures::spawn_local(async move {
+                let new_game_state = computer_move(game_state_clone).await;
+                let new_cell_colors = new_game_state
+                    .board_state
+                    .iter()
+                    .enumerate()
+                    .map(|(x, col)| {
+                        col.iter()
+                            .enumerate()
+                            .map(|(y, &cell)| match cell {
+                                0 => Color::Empty,
+                                1 => Color::Red,
+                                2 => Color::Yellow,
+                                _ => unreachable!(),
+                            })
+                            .collect()
+                    })
+                    .collect();
+                set_cell_colors.set(new_cell_colors);
+            });
         })
     };
 
     html! {
-        <board>
-            {for (0..7).map(|col_index| {
-                html! {
-                    <Column cell_colors={cell_colors[col_index].clone()} col_index={col_index} on_click={on_column_click.clone()} />
-                }
-            })}
-        </board>
+            <board>
+                {for (0..7).map(|col_index| {
+                    html! {
+                        <Column cell_colors={cell_colors[col_index].clone()} col_index={col_index} on_click={on_column_click.clone()} />
+                    }
+                })}
+            </board>
     }
 }
 
@@ -104,20 +125,8 @@ pub fn cell(props: &CellProps) -> Html {
     }
 }
 
-// async fn computer_move(game_state: GameState) -> GameState {
-//     let next_game_state = match get_connect4_computer_move(game_state.clone()).await {
-//         Ok(value) => match serde_json::from_value::<GameState>(value) {
-//             Ok(parsed) => parsed,
-//             Err(err) => {
-//                 println!("Error parsing JSON: {:?}", err);
-//                 return game_state;
-//             }
-//         },
-//         Err(err) => {
-//             // Handle the error if needed
-//             println!("Error: {:?}", err);
-//             return game_state;
-//         }
-//     };
-//     next_game_state
-// }
+async fn computer_move(game_state: GameState) -> GameState {
+    let resp = get_connect4_computer_move(game_state).await.unwrap();
+    let game_state: GameState = resp.json().await.unwrap();
+    game_state
+}
