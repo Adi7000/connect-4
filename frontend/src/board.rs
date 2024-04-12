@@ -15,7 +15,7 @@ pub struct CellProps {
     y: usize,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Copy)]
 pub enum Color {
     Empty,
     Red,
@@ -30,17 +30,25 @@ pub enum Msg {
 pub fn board(_props: &BoardProps) -> Html {
     let cell_colors = use_state(|| vec![vec![Color::Empty; 6]; 7]);
     let cell_colors_clone = cell_colors.clone();
+    let current_player = use_state(|| Color::Red);
     let on_column_click = {
         let set_cell_colors = cell_colors.clone();
+        let current_player = current_player.clone();
         Callback::from(move |col_index: usize| {
             let mut new_cell_colors = cell_colors_clone.clone().to_vec();
             for cell_color in new_cell_colors[col_index].iter_mut().rev() {
                 if *cell_color == Color::Empty {
-                    *cell_color = Color::Red;
+                    *cell_color = *current_player;
                     break;
                 }
             }
             set_cell_colors.set(new_cell_colors);
+            current_player.set(match *current_player {
+                // Add these lines
+                Color::Red => Color::Yellow,
+                Color::Yellow => Color::Red,
+                _ => unreachable!(),
+            });
         })
     };
 
