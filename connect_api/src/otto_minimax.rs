@@ -1,11 +1,11 @@
 /*
- * File: models.rs
+ * File: otto_minimax.rs
  * Author: Fahrin Bushra
  * Date: April 11, 2024
  * Adapted From: 
  *      https://github.com/thinking-fun/Connect4-with-TootandOtto.git
  *      https://github.com/jacobwong98/connect4.git
- * Description: GAME STATE MODEL
+ * Description: Toot oTTo easy mode minimax algorithm
 */
 
 use rand::Rng;
