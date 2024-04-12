@@ -1,5 +1,5 @@
 /*
- * File: filename.rs
+ * File: conect_minimax.rs
  * Author: Fahrin Bushra
  * Date: April 12, 2024
  * Adapted From: https://github.com/KeithGalli/Connect4-Python/tree/master

@@ -5,7 +5,10 @@ const PORT_NUMBER: u16 = 5000;
 
 mod models;
 mod routes;
-mod minimax;
+mod connect_minimax;
+mod otto_minimax;
+mod chat_gpt;
+mod helpers;
 
 #[launch]
 fn rocket() -> _ {
