@@ -3,14 +3,27 @@
 - We utilized ChatGPT to get the code for how to communicate with GPT-4-Turbo API
 
 ### **RATIONALE FOR DESIGN DECISIONS**
-What can we do on a computer that we can’t do on a printed board?
-1
-ECE 421 | Exploring Software Development Domains
+1) What can we do on a computer that we can’t do on a printed board?
+    A printed board allows creative freedom to the developers to put in effects as they please. For example, 
+upon winning connect-4, the board is flooded with the winning player's color for special effects. In a real 
+game, this would not be possible as there would not be suffiecient tokens nor would it be practicle for a human
+to do so for effect. 
+A computerized version also enables for the win checking algorithms to be robust whereas on a printed board, 
+there is no guarantee that a human would detect reliably if the game has ended.
+
 2) What is a computerized opponent? What are its objectives? (Remember, not everyone is an expert.)
 - What characteristics should it possess? Do we need an opponent or opponents?
+    A computerized opponent is when an oponenet in a multiplayer game is a computer algorithm. Ideally a
+computerized opponent should come with multiple levels of difficulty to allow all types of users to enjoy
+playing a game. For our game, this comes in the form of Easy and Hard difficulties. In our game we only need
+one computerized opponent, however, in other games more computerized opponents may be necessary where more than
+2 players compete at a time.
+
 3) What design choices exist for the Interface components?
 - Color? Font? Dimensions of Windows? Rescale-ability? Scroll Bars? ….
+
 4) What does exception handling mean in a GUI system?
+
 5) Do we require a command-line interface for debugging purposes????? (The answer is yes by the way – please explain why)
     - We do require a command line interface.
     - Developers might want to test out the computer algorithms (in our case the minimax algorithms) even before the front end is made
