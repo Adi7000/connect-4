@@ -23,7 +23,13 @@ one computerized opponent, however, in other games more computerized opponents m
 - Color? Font? Dimensions of Windows? Rescale-ability? Scroll Bars? ….
 
 4) What does exception handling mean in a GUI system?
-
+Exception handling in a GUI can invlve the following:
+    - Detection: Monitoring for errors or unexpected situations during program execution. This includes checking return values from API calls to see if things are fine
+    - Reporting: If errors were detected, it should log the error to a file or console for developers to fix it
+    - Providing feedback: It should provide feedback to the user in case of illegal inputs and not crash 
+    - Graceful Handling: Ensuring stability and responsiveness despite errors. The GUI should not crash during errors and illegal user inputs. In both cases, it should inform the user of the problems.
+    - Recovery: GUI should attempt to restore application stability by reverting or prompting corrective action.
+    
 5) Do we require a command-line interface for debugging purposes????? (The answer is yes by the way – please explain why)
     - We do require a command line interface.
     - Developers might want to test out the computer algorithms (in our case the minimax algorithms) even before the front end is made
