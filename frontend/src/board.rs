@@ -1,11 +1,14 @@
-use crate::{api::{get_connect4_computer_move, GameState}, menu_bar::Difficulty};
+use crate::{
+    api::{get_connect4_computer_move, GameState},
+    menu_bar::Difficulty,
+};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::console;
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
 pub struct BoardProps {
     pub game_type: GameType,
-    pub difficulty: Difficulty
+    pub difficulty: Difficulty,
 }
 #[derive(Clone, PartialEq, Copy)]
 pub enum GameType {
@@ -72,9 +75,7 @@ fn letter_to_int(letter: &Letter) -> i32 {
     }
 }
 
-
 fn rotate_90_anticlockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-
     let mut output = vec![vec![0; input.len()]; input[0].len()];
 
     for (i, row) in input.iter().enumerate() {
@@ -90,7 +91,6 @@ fn rotate_90_anticlockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
 }
 
 fn rotate_90_clockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-
     let mut output = vec![vec![0; input.len()]; input[0].len()];
 
     for (i, row) in input.iter().enumerate() {
@@ -122,10 +122,7 @@ fn transpose(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     output
 }
 
-
-
 pub fn check_otto_winner(state: &Vec<Vec<i32>>) -> (i32, i32) {
-
     let ROWS: usize = state.len();
     let COLS: usize = state[0].len();
 
@@ -133,37 +130,69 @@ pub fn check_otto_winner(state: &Vec<Vec<i32>>) -> (i32, i32) {
         for j in 0..COLS {
             // Check horizontal
             if j + 3 < COLS {
-                if state[i][j] == T && state[i][j + 1] == O && state[i][j + 2] == O && state[i][j + 3] == T {
+                if state[i][j] == T
+                    && state[i][j + 1] == O
+                    && state[i][j + 2] == O
+                    && state[i][j + 3] == T
+                {
                     return (1, 0); // Player 1 wins
                 }
-                if state[i][j] == O && state[i][j + 1] == T && state[i][j + 2] == T && state[i][j + 3] == O {
+                if state[i][j] == O
+                    && state[i][j + 1] == T
+                    && state[i][j + 2] == T
+                    && state[i][j + 3] == O
+                {
                     return (-1, 0); // Player 2 (AI) wins
                 }
             }
             // Check vertical
             if i + 3 < ROWS {
-                if state[i][j] == T && state[i + 1][j] == O && state[i + 2][j] == O && state[i + 3][j] == T {
+                if state[i][j] == T
+                    && state[i + 1][j] == O
+                    && state[i + 2][j] == O
+                    && state[i + 3][j] == T
+                {
                     return (1, 0); // Player 1 wins
                 }
-                if state[i][j] == O && state[i + 1][j] == T && state[i + 2][j] == T && state[i + 3][j] == O {
+                if state[i][j] == O
+                    && state[i + 1][j] == T
+                    && state[i + 2][j] == T
+                    && state[i + 3][j] == O
+                {
                     return (-1, 0); // Player 2 (AI) wins
                 }
             }
             // Check diagonal (top-left to bottom-right)
             if i + 3 < ROWS && j + 3 < COLS {
-                if state[i][j] == T && state[i + 1][j + 1] == O && state[i + 2][j + 2] == O && state[i + 3][j + 3] == T {
+                if state[i][j] == T
+                    && state[i + 1][j + 1] == O
+                    && state[i + 2][j + 2] == O
+                    && state[i + 3][j + 3] == T
+                {
                     return (1, 0); // Player 1 wins
                 }
-                if state[i][j] == O && state[i + 1][j + 1] == T && state[i + 2][j + 2] == T && state[i + 3][j + 3] == O {
+                if state[i][j] == O
+                    && state[i + 1][j + 1] == T
+                    && state[i + 2][j + 2] == T
+                    && state[i + 3][j + 3] == O
+                {
                     return (-1, 0); // Player 2 (AI) wins
                 }
             }
             // Check diagonal (bottom-left to top-right)
             if i >= 3 && j + 3 < COLS {
-                if state[i][j] == T && state[i - 1][j + 1] == O && state[i - 2][j + 2] == O && state[i - 3][j + 3] == T {
+                if state[i][j] == T
+                    && state[i - 1][j + 1] == O
+                    && state[i - 2][j + 2] == O
+                    && state[i - 3][j + 3] == T
+                {
                     return (1, 0); // Player 1 wins
                 }
-                if state[i][j] == O && state[i - 1][j + 1] == T && state[i - 2][j + 2] == T && state[i - 3][j + 3] == O {
+                if state[i][j] == O
+                    && state[i - 1][j + 1] == T
+                    && state[i - 2][j + 2] == T
+                    && state[i - 3][j + 3] == O
+                {
                     return (-1, 0); // Player 2 (AI) wins
                 }
             }
@@ -171,8 +200,6 @@ pub fn check_otto_winner(state: &Vec<Vec<i32>>) -> (i32, i32) {
     }
     (0, 0) // No winner yet
 }
-
-
 
 pub fn check_for_win(board_state: Vec<Vec<Color>>) -> Option<Color> {
     let mut consecutive_count: i32;
@@ -361,21 +388,20 @@ pub fn board(props: &BoardProps) -> Html {
                 }
 
                 let board_state: Vec<Vec<i32>> = new_cell_colors
-                .iter()
-                .map(|row| row.iter().map(|color| color_to_int(color)).collect())
-                .collect();
+                    .iter()
+                    .map(|row| row.iter().map(|color| color_to_int(color)).collect())
+                    .collect();
 
                 if let Some(winner) = check_for_win(new_cell_colors.clone()) {
                     //set all cell colors to winner
                     set_cell_colors.set(vec![vec![winner; 6]; 7]);
-                    return
-                }
-                else {
+                    return;
+                } else {
                     set_cell_colors.set(new_cell_colors.clone());
                 }
 
                 let transpose_board_state = rotate_90_clockwise(board_state);
-            
+
                 let mut game_state = GameState {
                     connect_4: true,
                     board_state: transpose_board_state.clone(),
@@ -407,18 +433,15 @@ pub fn board(props: &BoardProps) -> Html {
                             .collect()
                     })
                     .collect();
-                
+
                 if let Some(winner) = check_for_win(new_cell_colors.clone()) {
                     //set all cell colors to winner
                     set_cell_colors.set(vec![vec![winner; 6]; 7]);
-                }
-                else {
+                } else {
                     set_cell_colors.set(new_cell_colors.clone());
                 };
-                
             }
 
-    
             GameType::TootOtto => {
                 let mut new_cell_letters = cell_letters_clone.clone().to_vec();
                 for cell_letter in new_cell_letters[col_index].iter_mut().rev() {
@@ -429,22 +452,19 @@ pub fn board(props: &BoardProps) -> Html {
                 }
 
                 let board_state: Vec<Vec<i32>> = new_cell_letters
-                .iter()
-                .map(|row| row.iter().map(|letter| letter_to_int(letter)).collect())
-                .collect();
+                    .iter()
+                    .map(|row| row.iter().map(|letter| letter_to_int(letter)).collect())
+                    .collect();
                 let transpose_board_state = rotate_90_clockwise(board_state);
-
 
                 let otto_winner = check_otto_winner(&transpose_board_state.clone());
                 if otto_winner.0 == 1 {
                     set_cell_letters.set(vec![vec![Letter::T; 6]; 7]);
-                    return
-                }
-                else if otto_winner.0 == -1 {
+                    return;
+                } else if otto_winner.0 == -1 {
                     set_cell_letters.set(vec![vec![Letter::O; 6]; 7]);
-                    return
-                }
-                else {
+                    return;
+                } else {
                     set_cell_letters.set(new_cell_letters.clone());
                 }
 
@@ -485,19 +505,16 @@ pub fn board(props: &BoardProps) -> Html {
                             .collect()
                     })
                     .collect();
-                
 
                 // set_cell_letters.set(new_cell_letters);
                 // let otto_winner = check_otto_winner(&new_game_state.board_state.clone());
                 if otto_winner.0 == 1 {
                     set_cell_letters.set(vec![vec![Letter::T; 6]; 7]);
-                    return
-                }
-                else if otto_winner.0 == -1 {
+                    return;
+                } else if otto_winner.0 == -1 {
                     set_cell_letters.set(vec![vec![Letter::O; 6]; 7]);
-                    return
-                }
-                else {
+                    return;
+                } else {
                     set_cell_letters.set(new_cell_letters.clone());
                 }
 
@@ -576,30 +593,26 @@ pub fn cell(props: &Connect4CellProps) -> Html {
         Color::Red => {
             html! {
                 <cell id={cell_id} style={format!("background-color:{}", "red")}>{"R"}</cell>
-            }    
-        },
+            }
+        }
         Color::Yellow => {
             html! {
                 <cell id={cell_id} style={format!("background-color:{}", "yellow")}>{"Y"}</cell>
-            } 
-        },
+            }
+        }
         Color::Empty => {
             html! {
                 <cell id={cell_id} style={format!("background-color:{}", "white")}></cell>
-            } 
-        },
+            }
+        }
     }
 }
 
-
-
-
 fn computer_move(game_state: &mut GameState) -> GameState {
-
     let resp = get_connect4_computer_move(game_state);
 
     return resp.clone();
-    }
+}
 
 #[function_component(TootOttoCell)]
 pub fn cell(props: &TootOttoCellProps) -> Html {
