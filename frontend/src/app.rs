@@ -1,6 +1,8 @@
 use crate::board::*;
 use crate::menu_bar::*;
+use crate::router::{switch_main, MainRoute};
 use yew::prelude::*;
+use yew_router::prelude::*;
 
 #[function_component(App)]
 pub fn app() -> Html {
@@ -38,28 +40,32 @@ pub fn app() -> Html {
         Callback::from(move |opened: bool| rules_opened.set(opened))
     };
 
+    // html! {
+    //         <div style="padding:10px; text-align: center;">
+    //             <div style="display:inline; margin:20px">
+    //                 <GamesList games={games}
+    //                 selected_game = {(*selected_game).clone()}
+    //                 on_click={on_game_select.clone()}/>
+    //             </div>
+    //             <div style="display:inline; margin:20px">
+    //                 <DifficultyList difficulties={difficulties}
+    //                 selected_difficulty = {(*selected_difficulty).clone()}
+    //                 on_click={on_difficulty_select.clone()} />
+    //             </div>
+    //             <div style="padding:10px;">
+    //                 <RulesButton selected_game = {(*selected_game).clone()}
+    //                 rules_opened={(*rules_opened).clone()}
+    //                 on_click={on_rules_select.clone()}/>
+    //             </div>
+    //             <Board game_type={GameType::Connect4}/>
+    //             <div style="padding:10px;"></div>
+    //             <Board game_type={GameType::TootOtto}/>
+    //         </div>
+    // }
+
     html! {
-    <>
-        <div style="padding:10px; text-align: center;">
-            <div style="display:inline; margin:20px">
-                <GamesList games={games}
-                selected_game = {(*selected_game).clone()}
-                on_click={on_game_select.clone()}/>
-            </div>
-            <div style="display:inline; margin:20px">
-                <DifficultyList difficulties={difficulties}
-                selected_difficulty = {(*selected_difficulty).clone()}
-                on_click={on_difficulty_select.clone()} />
-            </div>
-            <div style="padding:10px;">
-                <RulesButton selected_game = {(*selected_game).clone()}
-                rules_opened={(*rules_opened).clone()}
-                on_click={on_rules_select.clone()}/>
-            </div>
-            <Board game_type={GameType::Connect4}/>
-            <div style="padding:10px;"></div>
-            <Board game_type={GameType::TootOtto}/>
-        </div>
-    </>
+        <BrowserRouter>
+            <Switch<MainRoute> render={switch_main}/>
+        </BrowserRouter>
     }
 }

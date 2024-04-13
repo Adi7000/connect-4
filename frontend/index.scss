@@ -19,6 +19,18 @@ main {
   text-align: center;
 }
 
+nav_bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 0.3em;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+button {
+  font-size: 1em;
+}
+
 board {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
