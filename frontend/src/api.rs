@@ -1,6 +1,8 @@
 use gloo_net::http::{Request, Response};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use log::info;
+use web_sys::console;
 
 const PORT_NUMBER: u16 = 5000;
 const EMPTY: i32 = 0;
@@ -63,10 +65,6 @@ pub fn get_connect_move(game_state: &GameState) -> GameState {
     game_state.clone()
 }
 
-
-use log::info;
-use web_sys::console;
-use console_error_panic_hook; // Add this import
 
 
 pub fn get_connect4_computer_move(

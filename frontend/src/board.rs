@@ -81,20 +81,9 @@ pub fn board(_props: &BoardProps) -> Html {
                 error: 0,
             };
 
-            // game_state.board_state = board_state.clone();
             console::log_1(&format!("{:?}", game_state).into());
 
             set_cell_colors.set(new_cell_colors);
-            // current_player.set(match *current_player {
-            //     Color::Red => Color::Yellow,
-            //     Color::Yellow => Color::Red,
-            //     _ => unreachable!(),
-            // });
-
-
-            // game_state.board_state = set_cell_colors.clone();
-
-            // console::log_1(&format!("{:?}", board_state).into());
 
             // Simulate computer move
             let mut game_state_clone = game_state.clone();
@@ -165,26 +154,12 @@ pub fn cell(props: &CellProps) -> Html {
     }
 }
 
-// use std::time;
-// // use tokio::time;
-// use yew::platform::time::sleep;
-// use std::time::Duration;
 
-use futures_timer::Delay;
-// use std::time::Duration;
-// use yew::platform::time::Duration as YewDuration; 
 
-use std::time::Duration;
 
  fn computer_move(game_state: &mut GameState) -> GameState {
-    // let duration = Duration::from_secs(1);
-    
-    // // // Use Delay to introduce a 1-second delay
-    // Delay::new(duration).await; // Introducing dummy delay to still keep this fn async. But delay is not supported in yew???
-    // // sleep(Duration::from_secs(1)).await;c
-
-
+  
     let resp = get_connect4_computer_move(game_state);
-    // let game_state: GameState = resp.json().await.unwrap();
+
     return resp.clone();
 }
