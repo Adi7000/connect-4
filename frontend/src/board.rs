@@ -59,6 +59,15 @@ fn color_to_int(color: &Color) -> i32 {
     }
 }
 
+fn letter_to_int(letter: &Letter) -> i32 {
+    match letter {
+        Letter::Empty => 0,
+        Letter::T => 1,
+        Letter::O => -1,
+        // Add other colors if needed
+    }
+}
+
 
 fn rotate_90_anticlockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
 
@@ -359,12 +368,59 @@ pub fn board(props: &BoardProps) -> Html {
                         break;
                     }
                 }
+
+                let board_state: Vec<Vec<i32>> = new_cell_letters
+                .iter()
+                .map(|row| row.iter().map(|letter| letter_to_int(letter)).collect())
+                .collect();
+
+                let transpose_board_state = rotate_90_clockwise(board_state);
+                // let transpose_board_state = board_state.clone();
+                let mut game_state = GameState {
+                    connect_4: false,
+                    board_state: transpose_board_state.clone(),
+                    difficulty: 1,
+                    error: 0,
+                };
+
+                console::log_1(&format!("board stae otto {:?}", transpose_board_state).into());
+
                 set_cell_letters.set(new_cell_letters);
-                current_letter.set(match *current_letter {
-                    Letter::T => Letter::O,
-                    Letter::O => Letter::T,
-                    _ => unreachable!(),
-                });
+
+
+                // Simulate computer move
+                let mut game_state_clone = game_state.clone();
+                let set_cell_letters = set_cell_letters.clone();
+                let new_game_state = computer_move(&mut game_state_clone);
+                let x = rotate_90_anticlockwise(new_game_state.board_state);
+                // let x = new_game_state.board_state.clone();
+
+                console::log_1(&format!("WORKS TULL HERE {:?}", x).into());
+
+
+                let new_cell_letters: Vec<Vec<Letter>> = x
+                    .iter()
+                    .enumerate()
+                    .map(|(x, col)| {
+                        col.iter()
+                            .enumerate()
+                            .map(|(y, &cell)| match cell {
+                                0 => Letter::Empty,
+                                1 => Letter::T,
+                                -1 => Letter::O,
+                                _ => unreachable!(),
+                            })
+                            .collect()
+                    })
+                    .collect();
+                
+
+                set_cell_letters.set(new_cell_letters);
+                // current_letter.set(match *current_letter {
+                //     Letter::T => Letter::O,
+                //     Letter::O => Letter::T,
+                //     _ => unreachable!(),
+                // });
             }
         })
     };

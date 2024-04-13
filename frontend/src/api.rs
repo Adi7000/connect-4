@@ -109,10 +109,30 @@ pub fn get_connect4_computer_move(
     game_state: &mut GameState,
 ) -> GameState {
 
-    // Print debug message to browser console
-    console::log_1(&format!("{:?}", game_state).into());
+    if game_state.connect_4 == true {
 
-    let res = get_connect_move(game_state).clone(); // RETURN BOARD WITH COPUTER MOVE
-    console::log_1(&format!("{:?}", res).into());
-    res
+        // Print debug message to browser console
+        console::log_1(&format!("{:?}", game_state).into());
+
+        let res = get_connect_move(game_state).clone(); // RETURN BOARD WITH COPUTER MOVE
+        console::log_1(&format!("{:?}", res).into());
+        return res;
+    }
+    else{
+
+        // Print debug message to browser console
+        console::log_1(&format!("{:?}", game_state).into());
+
+        let res = get_otto_move(game_state).clone(); // RETURN BOARD WITH COPUTER MOVE
+        console::log_1(&format!("{:?}", res).into());
+        res
+
+    }
+
+    // Print debug message to browser console
+    // console::log_1(&format!("{:?}", game_state).into());
+
+    // let res = get_connect_move(game_state).clone(); // RETURN BOARD WITH COPUTER MOVE
+    // console::log_1(&format!("{:?}", res).into());
+    // res
 }
