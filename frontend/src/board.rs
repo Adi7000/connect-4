@@ -452,14 +452,13 @@ pub fn board(props: &BoardProps) -> Html {
                 let mut game_state = GameState {
                     connect_4: false,
                     board_state: transpose_board_state.clone(),
-                    difficulty: 1,
+                    difficulty: difficulty,
                     error: 0,
                 };
 
                 console::log_1(&format!("board stae otto {:?}", transpose_board_state).into());
 
                 set_cell_letters.set(new_cell_letters);
-
 
                 // Simulate computer move
                 let mut game_state_clone = game_state.clone();
