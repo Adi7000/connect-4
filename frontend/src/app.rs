@@ -1,4 +1,4 @@
-use crate::board::Board;
+use crate::board::*;
 use crate::menu_bar::*;
 use yew::prelude::*;
 
@@ -56,7 +56,9 @@ pub fn app() -> Html {
                 rules_opened={(*rules_opened).clone()}
                 on_click={on_rules_select.clone()}/>
             </div>
-            <Board />
+            <Board game_type={GameType::Connect4}/>
+            <div style="padding:10px;"></div>
+            <Board game_type={GameType::TootOtto}/>
         </div>
     </>
     }
