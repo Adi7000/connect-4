@@ -19,9 +19,22 @@ playing a game. For our game, this comes in the form of Easy and Hard difficulti
 one computerized opponent, however, in other games more computerized opponents may be necessary where more than
 2 players compete at a time.
 
-3) What design choices exist for the Interface components?
-- Color? Font? Dimensions of Windows? Rescale-ability? Scroll Bars? ….
-
+3) What design choices exist for the Interface components? - Color? Font? Dimensions of Windows? Rescale-ability? Scroll Bars?
+For our Connect 4 web app, several design choices exist for interface components:
+- Color: We choose colors for the board, pieces, background, and interface elements that are visually appealing and provide good contrast for readability. 
+        - We made the board blue, and the tokens yellow and Red (matching the traditional Connect 4 game for familiarity).
+        - These colors have high contrast and help with readability
+        - We labelled the tokens with R and Y to help people with color blindness
+- Font: We selected  a clear and legible font (Times New Roman) for text elements such as rules descriptions, menu tabs, and player tokens.
+- Dimensions of Windows: The dimensions of the game window and board was determined to be 85% of screen height and width (on safari). 
+    - This ensured that they are large enough to display the game elements clearly without cluttering the interface. 
+    - But the default dimensions seemed to vary on other browsers
+    - This element will need to be further considered if the game needs to be ported to other devices like mobiles.
+- Scroll Bars: We included a scroll bar. 
+    - This was because our connect-4 board was on the top of the page and toot otto board on bottom of page.
+    - The scroll bar allowed each oard to be displayed maximally on the screen one at a time. 
+    - The scroll bar also allowed the user to zoom onto the boards while also being able to navigate to different board parts.
+    
 4) What does exception handling mean in a GUI system?
 Exception handling in a GUI can invlve the following:
     - Detection: Monitoring for errors or unexpected situations during program execution. This includes checking return values from API calls to see if things are fine
@@ -29,12 +42,13 @@ Exception handling in a GUI can invlve the following:
     - Providing feedback: It should provide feedback to the user in case of illegal inputs and not crash 
     - Graceful Handling: Ensuring stability and responsiveness despite errors. The GUI should not crash during errors and illegal user inputs. In both cases, it should inform the user of the problems.
     - Recovery: GUI should attempt to restore application stability by reverting or prompting corrective action.
-    
+
 5) Do we require a command-line interface for debugging purposes????? (The answer is yes by the way – please explain why)
     - We do require a command line interface.
     - Developers might want to test out the computer algorithms (in our case the minimax algorithms) even before the front end is made
     - In that case, a simple CLI that prints out computer moves with a given 2D vector will come in handy
     - We have comething like this in our api_usage_example folder where we can get computer responses printed to the terminal in response to given 2D vectors
+
 
 
 ### **SYSTEM LIMITATIONS**
