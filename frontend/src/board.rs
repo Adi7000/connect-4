@@ -1,3 +1,6 @@
+use crate::api::{get_connect4_computer_move, GameState};
+use wasm_bindgen_futures::spawn_local;
+use web_sys::console;
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
 pub struct BoardProps {
@@ -47,9 +50,66 @@ pub enum Color {
     Yellow,
 }
 
-pub enum Msg {
-    ColumnClicked(usize),
+fn color_to_int(color: &Color) -> i32 {
+    match color {
+        Color::Empty => 0,
+        Color::Red => 1,
+        Color::Yellow => 2,
+        // Add other colors if needed
+    }
 }
+
+
+fn rotate_90_anticlockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+
+    // output
+
+    // let transposed = transpose(input);
+    output.iter().rev().cloned().collect()
+}
+
+fn rotate_90_clockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+
+    let mut rotated = Vec::new();
+
+    for row in output {
+        let mut reversed_row = row;
+        reversed_row.reverse();
+        rotated.push(reversed_row);
+    }
+    rotated
+}
+
+// Transpose function from the previous answer
+fn transpose(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+
+    output
+}
+
+
 
 pub fn check_for_win(board_state: Vec<Vec<Color>>) -> Option<Color> {
     let mut consecutive_count: i32;
@@ -232,18 +292,65 @@ pub fn board(props: &BoardProps) -> Html {
                         break;
                     }
                 }
-                set_cell_colors.set(new_cell_colors.clone());
-                current_player.set(match *current_player {
-                    Color::Red => Color::Yellow,
-                    Color::Yellow => Color::Red,
-                    _ => unreachable!(),
-                });
-                //Check for win
+
+                let board_state: Vec<Vec<i32>> = new_cell_colors
+                .iter()
+                .map(|row| row.iter().map(|color| color_to_int(color)).collect())
+                .collect();
+
                 if let Some(winner) = check_for_win(new_cell_colors.clone()) {
                     //set all cell colors to winner
                     set_cell_colors.set(vec![vec![winner; 6]; 7]);
                 }
+                else {
+                    set_cell_colors.set(new_cell_colors.clone());
+                }
+
+                let transpose_board_state = rotate_90_clockwise(board_state);
+            
+                let mut game_state = GameState {
+                    connect_4: true,
+                    board_state: transpose_board_state.clone(),
+                    difficulty: 1,
+                    error: 0,
+                };
+
+                console::log_1(&format!("{:?}", game_state).into());
+
+                set_cell_colors.set(new_cell_colors);
+
+                // Simulate computer move
+                let mut game_state_clone = game_state.clone();
+                let set_cell_colors = set_cell_colors.clone();
+                let new_game_state = computer_move(&mut game_state_clone);
+                let x = rotate_90_anticlockwise(new_game_state.board_state);
+                let new_cell_colors: Vec<Vec<Color>> = x
+                    .iter()
+                    .enumerate()
+                    .map(|(x, col)| {
+                        col.iter()
+                            .enumerate()
+                            .map(|(y, &cell)| match cell {
+                                0 => Color::Empty,
+                                1 => Color::Red,
+                                2 => Color::Yellow,
+                                _ => unreachable!(),
+                            })
+                            .collect()
+                    })
+                    .collect();
+                
+                if let Some(winner) = check_for_win(new_cell_colors.clone()) {
+                    //set all cell colors to winner
+                    set_cell_colors.set(vec![vec![winner; 6]; 7]);
+                }
+                else {
+                    set_cell_colors.set(new_cell_colors.clone());
+                }
+                
             }
+
+    
             GameType::TootOtto => {
                 let mut new_cell_letters = cell_letters_clone.clone().to_vec();
                 for cell_letter in new_cell_letters[col_index].iter_mut().rev() {
@@ -342,6 +449,16 @@ pub fn cell(props: &Connect4CellProps) -> Html {
         },
     }
 }
+
+
+
+
+fn computer_move(game_state: &mut GameState) -> GameState {
+
+    let resp = get_connect4_computer_move(game_state);
+
+    return resp.clone();
+    }
 
 #[function_component(TootOttoCell)]
 pub fn cell(props: &TootOttoCellProps) -> Html {
