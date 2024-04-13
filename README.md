@@ -52,6 +52,11 @@ Exception handling in a GUI can invlve the following:
 
 
 ### **SYSTEM LIMITATIONS**
+- We have two project submissions (branch main and branch routing) where branch main is the best solution we produced.
+    - We had trouble integrating the branches together due to version issues with yew
+    - The main branch provides the core functionality where the difficulty can be selected, however the UI does not fully allow routing
+    - The routing branch allows for more intuitive routing but does not allow difficulty selection
+
 - The Toot-Otto computer minimax algorithm has a random component to it
     - From our research, this also seemed to be present in the given MEAN stack repo
     - The computer chooses a T or O token at random during its moves
