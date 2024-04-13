@@ -1,5 +1,6 @@
 use crate::api::{get_connect4_computer_move, GameState};
 use wasm_bindgen_futures::spawn_local;
+use web_sys::console;
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
 // use this to decide between connect4 and toot board
@@ -25,14 +26,30 @@ pub enum Color {
     Yellow,
 }
 
+fn color_to_int(color: &Color) -> i32 {
+    match color {
+        Color::Empty => 0,
+        Color::Red => 1,
+        Color::Yellow => 2,
+        // Add other colors if needed
+    }
+}
+
+pub fn transpose(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+    output
+}
+
+
 #[function_component(Board)]
 pub fn board(_props: &BoardProps) -> Html {
-    let mut game_state = GameState {
-        connect_4: true,
-        board_state: vec![vec![0; 6]; 7],
-        difficulty: 1,
-        error: 0,
-    };
+
 
     let cell_colors = use_state(|| vec![vec![Color::Empty; 6]; 7]);
     let cell_colors_clone = cell_colors.clone();
@@ -49,20 +66,43 @@ pub fn board(_props: &BoardProps) -> Html {
                     break;
                 }
             }
+            
+            let board_state: Vec<Vec<i32>> = new_cell_colors
+                .iter()
+                .map(|row| row.iter().map(|color| color_to_int(color)).collect())
+                .collect();
+
+            let transpose_board_state = transpose(board_state);
+            
+            let mut game_state = GameState {
+                connect_4: true,
+                board_state: transpose_board_state.clone(),
+                difficulty: 1,
+                error: 0,
+            };
+
+            // game_state.board_state = board_state.clone();
+            console::log_1(&format!("{:?}", game_state).into());
+
             set_cell_colors.set(new_cell_colors);
-            current_player.set(match *current_player {
-                Color::Red => Color::Yellow,
-                Color::Yellow => Color::Red,
-                _ => unreachable!(),
-            });
+            // current_player.set(match *current_player {
+            //     Color::Red => Color::Yellow,
+            //     Color::Yellow => Color::Red,
+            //     _ => unreachable!(),
+            // });
+
+
+            // game_state.board_state = set_cell_colors.clone();
+
+            // console::log_1(&format!("{:?}", board_state).into());
 
             // Simulate computer move
             let mut game_state_clone = game_state.clone();
             let set_cell_colors = set_cell_colors.clone();
             // wasm_bindgen_futures::spawn_local(async move {
                 let new_game_state = computer_move(&mut game_state_clone);
-                let new_cell_colors = new_game_state
-                    .board_state
+                let x = transpose(new_game_state.board_state);
+                let new_cell_colors = x
                     .iter()
                     .enumerate()
                     .map(|(x, col)| {
