@@ -301,6 +301,7 @@ pub fn board(props: &BoardProps) -> Html {
                 if let Some(winner) = check_for_win(new_cell_colors.clone()) {
                     //set all cell colors to winner
                     set_cell_colors.set(vec![vec![winner; 6]; 7]);
+                    return
                 }
                 else {
                     set_cell_colors.set(new_cell_colors.clone());
@@ -346,7 +347,7 @@ pub fn board(props: &BoardProps) -> Html {
                 }
                 else {
                     set_cell_colors.set(new_cell_colors.clone());
-                }
+                };
                 
             }
 
