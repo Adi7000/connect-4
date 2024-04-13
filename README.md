@@ -68,3 +68,4 @@ Exception handling in a GUI can invlve the following:
     5. Run application using `trunk serve --open`
 
 ### **MARKETING VIDEO**
+https://youtu.be/CmRCfi2TAD8
