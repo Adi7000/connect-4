@@ -57,10 +57,10 @@ pub fn board(_props: &BoardProps) -> Html {
             });
 
             // Simulate computer move
-            let game_state_clone = game_state.clone();
+            let mut game_state_clone = game_state.clone();
             let set_cell_colors = set_cell_colors.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                let new_game_state = computer_move(game_state_clone).await;
+                let new_game_state = computer_move(&mut game_state_clone).await;
                 let new_cell_colors = new_game_state
                     .board_state
                     .iter()
@@ -125,8 +125,26 @@ pub fn cell(props: &CellProps) -> Html {
     }
 }
 
-async fn computer_move(game_state: GameState) -> GameState {
-    let resp = get_connect4_computer_move(game_state).await.unwrap();
-    let game_state: GameState = resp.json().await.unwrap();
-    game_state
+// use std::time;
+// // use tokio::time;
+// use yew::platform::time::sleep;
+// use std::time::Duration;
+
+use futures_timer::Delay;
+// use std::time::Duration;
+// use yew::platform::time::Duration as YewDuration; 
+
+use std::time::Duration;
+
+async fn computer_move(game_state: &mut GameState) -> GameState {
+    let duration = Duration::from_secs(1);
+    
+    // // Use Delay to introduce a 1-second delay
+    Delay::new(duration).await; // Introducing dummy delay to still keep this fn async. But delay is not supported in yew???
+    // // sleep(Duration::from_secs(1)).await;c
+
+
+    let resp = get_connect4_computer_move(game_state);
+    // let game_state: GameState = resp.json().await.unwrap();
+    return resp.clone();
 }

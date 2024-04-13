@@ -40,6 +40,7 @@ pub async fn index() -> String {
 #[get("/connect", format= "json", data = "<game_state>")]
 pub fn get_connect_move(game_state: Json<GameState>) -> Json<GameState> {
 
+    println!("{:?}", game_state);
     // EXTRACT THE BOARD FROM THE REQUEST
     let extracted_game_state: GameState = game_state.clone().into_inner();
     let mut board = extracted_game_state.board_state.clone(); 
