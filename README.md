@@ -11,8 +11,11 @@ ECE 421 | Exploring Software Development Domains
 3) What design choices exist for the Interface components?
 - Color? Font? Dimensions of Windows? Rescale-ability? Scroll Bars? ….
 4) What does exception handling mean in a GUI system?
-5) Do we require a command-line interface for debugging purposes????? (The answer is yes by the
-way – please explain why)
+5) Do we require a command-line interface for debugging purposes????? (The answer is yes by the way – please explain why)
+    - We do require a command line interface.
+    - Developers might want to test out the computer algorithms (in our case the minimax algorithms) even before the front end is made
+    - In that case, a simple CLI that prints out computer moves with a given 2D vector will come in handy
+    - We have comething like this in our api_usage_example folder where we can get computer responses printed to the terminal in response to given 2D vectors
 
 
 ### **SYSTEM LIMITATIONS**
