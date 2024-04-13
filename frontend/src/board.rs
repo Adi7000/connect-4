@@ -251,45 +251,39 @@ pub fn board(props: &BoardProps) -> Html {
                         break;
                     }
                 }
-                set_cell_colors.set(new_cell_colors.clone());
-                current_player.set(match *current_player {
-                    Color::Red => Color::Yellow,
-                    Color::Yellow => Color::Red,
-                    _ => unreachable!(),
-                });
-                //Check for win
-                if let Some(winner) = check_for_win(new_cell_colors.clone()) {
-                    //set all cell colors to winner
-                    set_cell_colors.set(vec![vec![winner; 6]; 7]);
-                }
-            }
-<<<<<<< HEAD
-            
-            let board_state: Vec<Vec<i32>> = new_cell_colors
+
+                let board_state: Vec<Vec<i32>> = new_cell_colors
                 .iter()
                 .map(|row| row.iter().map(|color| color_to_int(color)).collect())
                 .collect();
 
-            let transpose_board_state = transpose(board_state);
+                if let Some(winner) = check_for_win(new_cell_colors.clone()) {
+                    //set all cell colors to winner
+                    set_cell_colors.set(vec![vec![winner; 6]; 7]);
+                }
+                else {
+                    set_cell_colors.set(new_cell_colors.clone());
+                }
+
+                let transpose_board_state = transpose(board_state);
             
-            let mut game_state = GameState {
-                connect_4: true,
-                board_state: transpose_board_state.clone(),
-                difficulty: 1,
-                error: 0,
-            };
+                let mut game_state = GameState {
+                    connect_4: true,
+                    board_state: transpose_board_state.clone(),
+                    difficulty: 1,
+                    error: 0,
+                };
 
-            console::log_1(&format!("{:?}", game_state).into());
+                console::log_1(&format!("{:?}", game_state).into());
 
-            set_cell_colors.set(new_cell_colors);
+                set_cell_colors.set(new_cell_colors);
 
-            // Simulate computer move
-            let mut game_state_clone = game_state.clone();
-            let set_cell_colors = set_cell_colors.clone();
-            // wasm_bindgen_futures::spawn_local(async move {
+                // Simulate computer move
+                let mut game_state_clone = game_state.clone();
+                let set_cell_colors = set_cell_colors.clone();
                 let new_game_state = computer_move(&mut game_state_clone);
                 let x = transpose(new_game_state.board_state);
-                let new_cell_colors = x
+                let new_cell_colors: Vec<Vec<Color>> = x
                     .iter()
                     .enumerate()
                     .map(|(x, col)| {
@@ -304,20 +298,18 @@ pub fn board(props: &BoardProps) -> Html {
                             .collect()
                     })
                     .collect();
-                set_cell_colors.set(new_cell_colors);
-            // });
-        })
-    };
+                
+                if let Some(winner) = check_for_win(new_cell_colors.clone()) {
+                    //set all cell colors to winner
+                    set_cell_colors.set(vec![vec![winner; 6]; 7]);
+                }
+                else {
+                    set_cell_colors.set(new_cell_colors.clone());
+                }
+                
+            }
 
-    html! {
-            <board>
-                {for (0..7).map(|col_index| {
-                    html! {
-                        <Column cell_colors={cell_colors[col_index].clone()} col_index={col_index} on_click={on_column_click.clone()} />
-                    }
-                })}
-            </board>
-=======
+    
             GameType::TootOtto => {
                 let mut new_cell_letters = cell_letters_clone.clone().to_vec();
                 for cell_letter in new_cell_letters[col_index].iter_mut().rev() {
@@ -358,7 +350,6 @@ pub fn board(props: &BoardProps) -> Html {
                 </board>
             }
         }
->>>>>>> main
     }
 }
 
