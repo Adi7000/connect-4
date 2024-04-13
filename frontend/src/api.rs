@@ -4,6 +4,13 @@ use serde_json::Value;
 use log::info;
 use web_sys::console;
 
+use crate::otto_minimax::ai_move_easy;
+use crate::connect_minimax::drop_piece;
+use crate::connect_minimax::minimax;
+use crate::connect_minimax::get_next_open_row;
+use crate::connect_minimax::is_valid_location;
+
+
 const PORT_NUMBER: u16 = 5000;
 const EMPTY: i32 = 0;
 const AI_PIECE: i32 = 2;
@@ -17,10 +24,41 @@ pub struct GameState {
 }
 
 
-use crate::connect_minimax::drop_piece;
-use crate::connect_minimax::minimax;
-use crate::connect_minimax::get_next_open_row;
-use crate::connect_minimax::is_valid_location;
+pub fn get_otto_move(game_state: &GameState) -> GameState {
+    
+    println!("{:?}", game_state);
+    let mut board = game_state.board_state.clone(); 
+
+    // PRINT BOARD FOR SANITY CHECK
+    println!("BEFORE AI MOVE:");
+    for row in &board {
+        println!("{:?}", row);
+    }
+
+    // SET DEPTH ACCORDING TO DIFFICULTY
+    let depth = if game_state.difficulty == 2 { 8 } else{ 3 };
+
+
+     // UPDATE WITH AI MOVE
+     let updated_board = ai_move_easy(&mut board, depth);
+            
+     // PRINT UPDATED BOARD FOR SANITY CHECK
+     println!("AFTER AI MOVE:");
+     for row in &updated_board {
+         println!("{:?}", row);
+     }
+
+     // MAKE THE UPDATED GameState
+     let res: GameState = GameState{
+         connect_4: game_state.connect_4.clone(),
+         board_state: updated_board.clone(),
+         difficulty: game_state.difficulty.clone(),
+         error: 0,
+     };
+
+     return res;
+}
+
 
 pub fn get_connect_move(game_state: &GameState) -> GameState {
 
@@ -34,7 +72,7 @@ pub fn get_connect_move(game_state: &GameState) -> GameState {
     }
 
     // SET DEPTH ACCORDING TO DIFFICULTY
-    let depth = if game_state.difficulty == 2 { 5 } else{ 3 };
+    let depth = if game_state.difficulty == 2 { 8 } else{ 3 };
 
     if let (column, score) = minimax(&mut board, depth, -1000, 1000, true) {
         // PUT AI PIECE IN BEST LOCATION
