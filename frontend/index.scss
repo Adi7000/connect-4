@@ -42,10 +42,7 @@ column {
   align-items: center;
 
   &:hover {
-    background-color: darken(
-      #008cff,
-      10%
-    ); // Change to the desired background color on hover
+    background-color: darken(#008cff, 10%);
   }
 }
 
@@ -53,23 +50,11 @@ cell {
   justify-self: center;
   border: 1px solid #000000;
   border-radius: 100%;
-  flex: 1;
-  display: flex;
   height: 80%;
   width: 80%;
+  font-size: large;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
-// .logo {
-//   height: 20em;
-// }
-
-// .heart:after {
-//   content: "❤️";
-
-//   font-size: 1.75em;
-// }
-
-// h1 + .subtitle {
-//   display: block;
-//   margin-top: -1em;
-// }
