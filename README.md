@@ -1,33 +1,38 @@
 ### **MAJOR INNOVATIONS**
-- Our Toot Otto game variant's hard mode computer moves are GPT assisted
+- Our Toot Otto game variant's API's hard mode computer moves are GPT assisted
 - We utilized ChatGPT to get the code for how to communicate with GPT-4-Turbo API
 
 ### **RATIONALE FOR DESIGN DECISIONS**
-- Our system is divided into a frontend and a backend
-- Frontend consists of UI components and basic validation functions regarding game state
-    - The frontend makes API calls to the backend to get computer moves for connect-4/Toot-Otto
-    - It is programmed using Trunk- a RUST frontend framework
-- Backend consists of logic regarding computer moves
-    - Connect 4 computer moves are determined by a minimax algorithm
-    - Toot Otto computer moves are determined by a pseudo minimax algorithm for easy difficulty or by ChatGPT for hard difficulty
-    - Backend was programmed using Rocket.rs due to its ease of use
-- The division of the application into a front and backend ensured components were decoupled
-    - This enabled backend and front logic to be tested separately
-    - This also enabled developers to work in parallel without much version control conflict
+What can we do on a computer that we can’t do on a printed board?
+1
+ECE 421 | Exploring Software Development Domains
+2) What is a computerized opponent? What are its objectives? (Remember, not everyone is an expert.)
+- What characteristics should it possess? Do we need an opponent or opponents?
+3) What design choices exist for the Interface components?
+- Color? Font? Dimensions of Windows? Rescale-ability? Scroll Bars? ….
+4) What does exception handling mean in a GUI system?
+5) Do we require a command-line interface for debugging purposes????? (The answer is yes by the
+way – please explain why)
+
 
 ### **SYSTEM LIMITATIONS**
 - The Toot-Otto computer minimax algorithm has a random component to it
     - From our research, this also seemed to be present in the given MEAN stack repo
     - The computer chooses a T or O token at random during its moves
-- Consequently, the algorithm sometime spits out random moves instead of trying to win
-- GPT assisted hard mode also faces the same problem in that GPT does not respond properly 40% of the time.
-    - In this case we have to rely on the flawed minimax algorithm for a computer move.
+    - Consequently, the algorithm sometimes spits out random moves instead of trying to win
 
-### **DESCRIPTION OF REMAINING MEAN STACK CODE**
+- Our Toot OTTO game variant does not let the user select T or O tokens at each turn.
+    - The user is fixed with Token T
+    - We did not have enough time to implement user token selection
+
+- API issues with reqwest
+    - The reqwest library seemed to have dependency issues with yew
+    - hence, we could not integrate our frontend with the API
+    - So we copied backend functions onto our frontend and went with a simple MVC app
+    - Unfortunately, this also meant that our TooT oTTo game's hard mode werenot GPT assisted in our frontend version (since GPT requires api calls that cannot be done without reqwest)
+
 
 ### **USER MANUAL**
-
-### **INSTALLATION**
 1. Clone the repository
 2. Run BACKEND SERVER:
     1. Ensure you are in the connect_api directory: `cd connect_api`

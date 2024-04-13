@@ -1,10 +1,11 @@
-use crate::api::{get_connect4_computer_move, GameState};
+use crate::{api::{get_connect4_computer_move, GameState}, menu_bar::Difficulty};
 use wasm_bindgen_futures::spawn_local;
 use web_sys::console;
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
 pub struct BoardProps {
     pub game_type: GameType,
+    pub difficulty: Difficulty
 }
 #[derive(Clone, PartialEq, Copy)]
 pub enum GameType {
@@ -344,6 +345,10 @@ pub fn board(props: &BoardProps) -> Html {
         let set_cell_letters = cell_letters.clone();
         let current_player = current_player.clone();
         let current_letter = current_letter.clone();
+        let difficulty = match props.difficulty.clone() {
+            Difficulty::Easy => 1,
+            Difficulty::Hard => 2,
+        };
         Callback::from(move |col_index: usize| match game_type {
             // Use the cloned game_type here
             GameType::Connect4 => {
@@ -374,7 +379,7 @@ pub fn board(props: &BoardProps) -> Html {
                 let mut game_state = GameState {
                     connect_4: true,
                     board_state: transpose_board_state.clone(),
-                    difficulty: 1,
+                    difficulty: difficulty,
                     error: 0,
                 };
 
@@ -447,14 +452,13 @@ pub fn board(props: &BoardProps) -> Html {
                 let mut game_state = GameState {
                     connect_4: false,
                     board_state: transpose_board_state.clone(),
-                    difficulty: 1,
+                    difficulty: difficulty,
                     error: 0,
                 };
 
                 console::log_1(&format!("board stae otto {:?}", transpose_board_state).into());
 
                 set_cell_letters.set(new_cell_letters);
-
 
                 // Simulate computer move
                 let mut game_state_clone = game_state.clone();
