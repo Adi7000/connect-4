@@ -76,15 +76,7 @@ pub fn get_connect4_computer_move(
     // Print debug message to browser console
     console::log_1(&format!("{:?}", game_state).into());
 
-    get_connect_move(game_state).clone() // RETURN BOARD WITH COPUTER MOVE
-    // WILL BE HELPFUL TO PRINT THIS AND SEE
-    
-    // game_state.clone()
-
-    // let url = format!("http://localhost:{PORT_NUMBER}/project/connect4");
-    // let resp = match Request::get(&url).send().await {
-    //     Ok(resp) => resp,
-    //     Err(err) => return Err(err),
-    // };
-    // Ok(resp)
+    let res = get_connect_move(game_state).clone(); // RETURN BOARD WITH COPUTER MOVE
+    console::log_1(&format!("{:?}", res).into());
+    res
 }
