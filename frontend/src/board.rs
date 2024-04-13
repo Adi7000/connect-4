@@ -1,3 +1,6 @@
+use crate::api::{get_connect4_computer_move, GameState};
+use wasm_bindgen_futures::spawn_local;
+use web_sys::console;
 use yew::{function_component, html, use_state, Callback, Html, Properties};
 #[derive(Properties, Clone, PartialEq)]
 pub struct BoardProps {
@@ -8,6 +11,9 @@ pub enum GameType {
     Connect4,
     TootOtto,
 }
+
+const T: i32 = 1;
+const O: i32 = -1;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct ColProps {
@@ -47,9 +53,125 @@ pub enum Color {
     Yellow,
 }
 
-pub enum Msg {
-    ColumnClicked(usize),
+fn color_to_int(color: &Color) -> i32 {
+    match color {
+        Color::Empty => 0,
+        Color::Red => 1,
+        Color::Yellow => 2,
+        // Add other colors if needed
+    }
 }
+
+fn letter_to_int(letter: &Letter) -> i32 {
+    match letter {
+        Letter::Empty => 0,
+        Letter::T => 1,
+        Letter::O => -1,
+        // Add other colors if needed
+    }
+}
+
+
+fn rotate_90_anticlockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+
+    // output
+
+    // let transposed = transpose(input);
+    output.iter().rev().cloned().collect()
+}
+
+fn rotate_90_clockwise(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+
+    let mut rotated = Vec::new();
+
+    for row in output {
+        let mut reversed_row = row;
+        reversed_row.reverse();
+        rotated.push(reversed_row);
+    }
+    rotated
+}
+
+// Transpose function from the previous answer
+fn transpose(input: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    let mut output = vec![vec![0; input.len()]; input[0].len()];
+
+    for (i, row) in input.iter().enumerate() {
+        for (j, &val) in row.iter().enumerate() {
+            output[j][i] = val;
+        }
+    }
+
+    output
+}
+
+
+
+pub fn check_otto_winner(state: &Vec<Vec<i32>>) -> (i32, i32) {
+
+    let ROWS: usize = state.len();
+    let COLS: usize = state[0].len();
+
+    for i in 0..ROWS {
+        for j in 0..COLS {
+            // Check horizontal
+            if j + 3 < COLS {
+                if state[i][j] == T && state[i][j + 1] == O && state[i][j + 2] == O && state[i][j + 3] == T {
+                    return (1, 0); // Player 1 wins
+                }
+                if state[i][j] == O && state[i][j + 1] == T && state[i][j + 2] == T && state[i][j + 3] == O {
+                    return (-1, 0); // Player 2 (AI) wins
+                }
+            }
+            // Check vertical
+            if i + 3 < ROWS {
+                if state[i][j] == T && state[i + 1][j] == O && state[i + 2][j] == O && state[i + 3][j] == T {
+                    return (1, 0); // Player 1 wins
+                }
+                if state[i][j] == O && state[i + 1][j] == T && state[i + 2][j] == T && state[i + 3][j] == O {
+                    return (-1, 0); // Player 2 (AI) wins
+                }
+            }
+            // Check diagonal (top-left to bottom-right)
+            if i + 3 < ROWS && j + 3 < COLS {
+                if state[i][j] == T && state[i + 1][j + 1] == O && state[i + 2][j + 2] == O && state[i + 3][j + 3] == T {
+                    return (1, 0); // Player 1 wins
+                }
+                if state[i][j] == O && state[i + 1][j + 1] == T && state[i + 2][j + 2] == T && state[i + 3][j + 3] == O {
+                    return (-1, 0); // Player 2 (AI) wins
+                }
+            }
+            // Check diagonal (bottom-left to top-right)
+            if i >= 3 && j + 3 < COLS {
+                if state[i][j] == T && state[i - 1][j + 1] == O && state[i - 2][j + 2] == O && state[i - 3][j + 3] == T {
+                    return (1, 0); // Player 1 wins
+                }
+                if state[i][j] == O && state[i - 1][j + 1] == T && state[i - 2][j + 2] == T && state[i - 3][j + 3] == O {
+                    return (-1, 0); // Player 2 (AI) wins
+                }
+            }
+        }
+    }
+    (0, 0) // No winner yet
+}
+
+
 
 pub fn check_for_win(board_state: Vec<Vec<Color>>) -> Option<Color> {
     let mut consecutive_count: i32;
@@ -232,18 +354,66 @@ pub fn board(props: &BoardProps) -> Html {
                         break;
                     }
                 }
-                set_cell_colors.set(new_cell_colors.clone());
-                current_player.set(match *current_player {
-                    Color::Red => Color::Yellow,
-                    Color::Yellow => Color::Red,
-                    _ => unreachable!(),
-                });
-                //Check for win
+
+                let board_state: Vec<Vec<i32>> = new_cell_colors
+                .iter()
+                .map(|row| row.iter().map(|color| color_to_int(color)).collect())
+                .collect();
+
+                if let Some(winner) = check_for_win(new_cell_colors.clone()) {
+                    //set all cell colors to winner
+                    set_cell_colors.set(vec![vec![winner; 6]; 7]);
+                    return
+                }
+                else {
+                    set_cell_colors.set(new_cell_colors.clone());
+                }
+
+                let transpose_board_state = rotate_90_clockwise(board_state);
+            
+                let mut game_state = GameState {
+                    connect_4: true,
+                    board_state: transpose_board_state.clone(),
+                    difficulty: 1,
+                    error: 0,
+                };
+
+                console::log_1(&format!("{:?}", game_state).into());
+
+                set_cell_colors.set(new_cell_colors);
+
+                // Simulate computer move
+                let mut game_state_clone = game_state.clone();
+                let set_cell_colors = set_cell_colors.clone();
+                let new_game_state = computer_move(&mut game_state_clone);
+                let x = rotate_90_anticlockwise(new_game_state.board_state);
+                let new_cell_colors: Vec<Vec<Color>> = x
+                    .iter()
+                    .enumerate()
+                    .map(|(x, col)| {
+                        col.iter()
+                            .enumerate()
+                            .map(|(y, &cell)| match cell {
+                                0 => Color::Empty,
+                                1 => Color::Red,
+                                2 => Color::Yellow,
+                                _ => unreachable!(),
+                            })
+                            .collect()
+                    })
+                    .collect();
+                
                 if let Some(winner) = check_for_win(new_cell_colors.clone()) {
                     //set all cell colors to winner
                     set_cell_colors.set(vec![vec![winner; 6]; 7]);
                 }
+                else {
+                    set_cell_colors.set(new_cell_colors.clone());
+                };
+                
             }
+
+    
             GameType::TootOtto => {
                 let mut new_cell_letters = cell_letters_clone.clone().to_vec();
                 for cell_letter in new_cell_letters[col_index].iter_mut().rev() {
@@ -252,12 +422,86 @@ pub fn board(props: &BoardProps) -> Html {
                         break;
                     }
                 }
+
+                let board_state: Vec<Vec<i32>> = new_cell_letters
+                .iter()
+                .map(|row| row.iter().map(|letter| letter_to_int(letter)).collect())
+                .collect();
+                let transpose_board_state = rotate_90_clockwise(board_state);
+
+
+                let otto_winner = check_otto_winner(&transpose_board_state.clone());
+                if otto_winner.0 == 1 {
+                    set_cell_letters.set(vec![vec![Letter::T; 6]; 7]);
+                    return
+                }
+                else if otto_winner.0 == -1 {
+                    set_cell_letters.set(vec![vec![Letter::O; 6]; 7]);
+                    return
+                }
+                else {
+                    set_cell_letters.set(new_cell_letters.clone());
+                }
+
+                // let transpose_board_state = board_state.clone();
+                let mut game_state = GameState {
+                    connect_4: false,
+                    board_state: transpose_board_state.clone(),
+                    difficulty: 1,
+                    error: 0,
+                };
+
+                console::log_1(&format!("board stae otto {:?}", transpose_board_state).into());
+
                 set_cell_letters.set(new_cell_letters);
-                current_letter.set(match *current_letter {
-                    Letter::T => Letter::O,
-                    Letter::O => Letter::T,
-                    _ => unreachable!(),
-                });
+
+
+                // Simulate computer move
+                let mut game_state_clone = game_state.clone();
+                let set_cell_letters = set_cell_letters.clone();
+                let new_game_state = computer_move(&mut game_state_clone);
+                let otto_winner = check_otto_winner(&new_game_state.board_state.clone());
+                let x = rotate_90_anticlockwise(new_game_state.board_state);
+                // let x = new_game_state.board_state.clone();
+
+                console::log_1(&format!("WORKS TULL HERE {:?}", x).into());
+
+                let new_cell_letters: Vec<Vec<Letter>> = x
+                    .iter()
+                    .enumerate()
+                    .map(|(x, col)| {
+                        col.iter()
+                            .enumerate()
+                            .map(|(y, &cell)| match cell {
+                                0 => Letter::Empty,
+                                1 => Letter::T,
+                                -1 => Letter::O,
+                                _ => unreachable!(),
+                            })
+                            .collect()
+                    })
+                    .collect();
+                
+
+                // set_cell_letters.set(new_cell_letters);
+                // let otto_winner = check_otto_winner(&new_game_state.board_state.clone());
+                if otto_winner.0 == 1 {
+                    set_cell_letters.set(vec![vec![Letter::T; 6]; 7]);
+                    return
+                }
+                else if otto_winner.0 == -1 {
+                    set_cell_letters.set(vec![vec![Letter::O; 6]; 7]);
+                    return
+                }
+                else {
+                    set_cell_letters.set(new_cell_letters.clone());
+                }
+
+                // current_letter.set(match *current_letter {
+                //     Letter::T => Letter::O,
+                //     Letter::O => Letter::T,
+                //     _ => unreachable!(),
+                // });
             }
         })
     };
@@ -324,15 +568,34 @@ pub fn column(props: &ColProps) -> Html {
 #[function_component(Connect4Cell)]
 pub fn cell(props: &Connect4CellProps) -> Html {
     let cell_id = format!("c{},{}", props.x, props.y);
-    let cell_color = match props.color {
-        Color::Red => "red",
-        Color::Yellow => "yellow",
-        Color::Empty => "white",
-    };
-    html! {
-        <cell id={cell_id} style={format!("background-color:{}", cell_color)}></cell>
+    match props.color {
+        Color::Red => {
+            html! {
+                <cell id={cell_id} style={format!("background-color:{}", "red")}>{"R"}</cell>
+            }    
+        },
+        Color::Yellow => {
+            html! {
+                <cell id={cell_id} style={format!("background-color:{}", "yellow")}>{"Y"}</cell>
+            } 
+        },
+        Color::Empty => {
+            html! {
+                <cell id={cell_id} style={format!("background-color:{}", "white")}></cell>
+            } 
+        },
     }
 }
+
+
+
+
+fn computer_move(game_state: &mut GameState) -> GameState {
+
+    let resp = get_connect4_computer_move(game_state);
+
+    return resp.clone();
+    }
 
 #[function_component(TootOttoCell)]
 pub fn cell(props: &TootOttoCellProps) -> Html {
