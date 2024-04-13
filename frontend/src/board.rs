@@ -324,13 +324,22 @@ pub fn column(props: &ColProps) -> Html {
 #[function_component(Connect4Cell)]
 pub fn cell(props: &Connect4CellProps) -> Html {
     let cell_id = format!("c{},{}", props.x, props.y);
-    let cell_color = match props.color {
-        Color::Red => "red",
-        Color::Yellow => "yellow",
-        Color::Empty => "white",
-    };
-    html! {
-        <cell id={cell_id} style={format!("background-color:{}", cell_color)}></cell>
+    match props.color {
+        Color::Red => {
+            html! {
+                <cell id={cell_id} style={format!("background-color:{}", "red")}>{"R"}</cell>
+            }    
+        },
+        Color::Yellow => {
+            html! {
+                <cell id={cell_id} style={format!("background-color:{}", "yellow")}>{"Y"}</cell>
+            } 
+        },
+        Color::Empty => {
+            html! {
+                <cell id={cell_id} style={format!("background-color:{}", "white")}></cell>
+            } 
+        },
     }
 }
 
