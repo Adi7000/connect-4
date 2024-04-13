@@ -36,7 +36,7 @@ pub fn get_otto_move(game_state: &GameState) -> GameState {
     }
 
     // SET DEPTH ACCORDING TO DIFFICULTY
-    let depth = if game_state.difficulty == 2 { 8 } else{ 3 };
+    let depth = if game_state.difficulty == 2 { 5 } else{ 3 };
 
 
      // UPDATE WITH AI MOVE
@@ -72,7 +72,7 @@ pub fn get_connect_move(game_state: &GameState) -> GameState {
     }
 
     // SET DEPTH ACCORDING TO DIFFICULTY
-    let depth = if game_state.difficulty == 2 { 8 } else{ 3 };
+    let depth = if game_state.difficulty == 2 { 5 } else{ 3 };
 
     if let (column, score) = minimax(&mut board, depth, -1000, 1000, true) {
         // PUT AI PIECE IN BEST LOCATION

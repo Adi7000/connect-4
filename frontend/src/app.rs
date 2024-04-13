@@ -56,9 +56,11 @@ pub fn app() -> Html {
                 rules_opened={(*rules_opened).clone()}
                 on_click={on_rules_select.clone()}/>
             </div>
-            <Board game_type={GameType::Connect4}/>
+            <Board game_type={GameType::Connect4}
+            difficulty={(*selected_difficulty).clone()}/>
             <div style="padding:10px;"></div>
-            <Board game_type={GameType::TootOtto}/>
+            <Board game_type={GameType::TootOtto}
+            difficulty={(*selected_difficulty).clone()}/>
         </div>
     </>
     }
